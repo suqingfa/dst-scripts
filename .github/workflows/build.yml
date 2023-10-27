@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: 0 */6 * * *
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+
+      - uses: actions/cache@v3
+        with:
+          key: dst
+          path: /home/runner/dst
+
+      - name: Setup steamcmd
+        uses: CyberAndrii/setup-steamcmd@v1
+
+      - name: download dst server
+        run: steamcmd +force_install_dir /home/runner/dst +login anonymous +app_update 343050 validate +quit
+
+      - name: check need update
+        run: |
+          [ $(git log --format=%B --max-count=1) = $(cat /home/runner/dst/version.txt) ] || \
+          echo "version=$(cat /home/runner/dst/version.txt)" >> $GITHUB_ENV
+
+      - name: unzip
+        if: ${{ env.version }}
+        run: unzip -o /home/runner/dst/data/databundles/scripts.zip
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        if: ${{ env.version }}
+        with:
+          commit_message: ${{ env.version }}
