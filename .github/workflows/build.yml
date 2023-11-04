@@ -19,11 +19,16 @@ jobs:
           key: dst
           path: /home/runner/dst
 
-      - name: Setup steamcmd
-        uses: CyberAndrii/setup-steamcmd@v1
-
-      - name: download dst server
-        run: steamcmd +force_install_dir /home/runner/dst +login anonymous +app_update 343050 validate +quit
+      - name: download files
+        uses: Skippeh/steamfetch-action@v1
+        with:
+          dir: /home/runner/dst/
+          os: linux
+          app: 343050
+          osarch: 64
+          files: |
+            version.txt
+            data/databundles/scripts.zip
 
       - name: check need update
         run: |
