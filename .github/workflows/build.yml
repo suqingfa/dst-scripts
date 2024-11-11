@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@main
         with:
           token: ${{ secrets.PAT }}
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@main
         with:
           key: dst
           path: /home/runner/dst
