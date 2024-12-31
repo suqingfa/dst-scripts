@@ -11,6 +11,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: true
+          fetch-depth: 0
 
       - uses: actions/cache@main
         with:
@@ -23,20 +26,26 @@ jobs:
           sudo apt-get update
           sudo apt-get install steamcmd -y
 
-      - name: download dst server
+      - name: Download Dst Server
         run: steamcmd +force_install_dir /home/runner/dst +login anonymous +app_update 343050 validate +quit
 
-      - name: check need update
+      - name: Check Update
         run: |
           [ $(git log --format=%B --max-count=1) = $(cat /home/runner/dst/version.txt) ] || \
           echo "version=$(cat /home/runner/dst/version.txt)" >> $GITHUB_ENV
 
-      - name: unzip
+      - name: Unzip
         if: ${{ env.version }}
         run: unzip -o /home/runner/dst/data/databundles/scripts.zip
 
-      - uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Push Changes
         if: ${{ env.version }}
-        with:
-          token: ${{ secrets.PAT }}
-          commit_message: ${{ env.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+          MESSAGE: ${{ env.version }}
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m $MESSAGE
+          git push
