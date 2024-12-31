@@ -8,8 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: steamcmd/steamcmd
 
     steps:
       - uses: actions/checkout@main
@@ -21,6 +19,12 @@ jobs:
         with:
           key: dst
           path: /home/runner/dst
+
+      - name: Install SteamCMD
+        run: |
+          sudo add-apt-repository multiverse
+          sudo apt-get update
+          sudo apt-get install steamcmd -y
 
       - name: Download Dst Server
         run: steamcmd +force_install_dir /home/runner/dst +login anonymous +app_update 343050 validate +quit
