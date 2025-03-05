@@ -21,7 +21,7 @@ jobs:
           path: /home/runner/dst
 
       - name: Setup Steamcmd
-        uses: CyberAndrii/setup-steamcmd@v1
+        uses: buildalon/setup-steamcmd@v1
 
       - name: Download Dst Server
         run: steamcmd +force_install_dir /home/runner/dst +login anonymous +app_update 343050 validate +quit
