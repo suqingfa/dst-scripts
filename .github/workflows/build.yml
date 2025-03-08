@@ -15,11 +15,6 @@ jobs:
           persist-credentials: true
           fetch-depth: 0
 
-      - uses: actions/cache@main
-        with:
-          key: dst
-          path: /home/runner/dst
-
       - name: Setup Steamcmd
         uses: buildalon/setup-steamcmd@v1
 
