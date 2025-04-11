@@ -8,7 +8,7 @@ local SUITS =
     DIAMONDS = 4,
 }
 
-local ROYAL_FLUSH = {1, 10, 11, 12, 13} -- Already sorted.
+local HIGH_STRAIGHT = {1, 10, 11, 12, 13} -- Already sorted.
 
 --------------------------------------------------------------------------------------------------------------------------
 
@@ -76,19 +76,18 @@ function BaseJoker:EvaluateHand()
             break
         end
     end
-    -- Ace-low straight
-    if not is_straight and nums[1] == 1 and nums[2] == 2 and nums[3] == 3 and nums[4] == 4 and nums[5] == 5 then
-        is_straight = true
-    end
 
-    -- Check royal flush
+	-- Check high straight
     local is_royal = true
     for i = 1, NUM_CARDS do
-        if nums[i] ~= ROYAL_FLUSH[i] then
+		if nums[i] ~= HIGH_STRAIGHT[i] then
             is_royal = false
             break
         end
     end
+	if is_royal then
+		is_straight = true
+	end
 
     -- Assign score
     local score
